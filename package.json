@@ -1,6 +1,6 @@
 {
   "name": "rangle-gulp",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Gulp helper functions for Rangle.io default project structure",
   "main": "src/rangle-gulp.js",
   "dependencies": {
