@@ -112,7 +112,9 @@ exports.mocha = function (options) {
     gulp.src(files)
       .pipe(mocha({
         reporter: 'nyan'
-      }))
+      })).on('error', function (err) {
+        console.log("Errrr", err);
+      })
       .on('end', function () {
         console.log('Donnnn');
       });
@@ -138,7 +140,8 @@ exports.protractor = function (options) {
     // Be sure to return the stream
     return gulp.src(files)
       .pipe(protractor({
-        configFile: options.protractorConf || 'client/testing/protractor.conf.js',
+        configFile: options.protractorConf ||
+          'client/testing/protractor.conf.js',
         args: ["--baseUrl", options.baseUrl]
       }))
       .on('error', function (err) {
@@ -229,12 +232,13 @@ exports.setLogLevel = function (level) {
 };
 
 // Watch and compile sass: requires a source and destination
-exports.sass = function(options) {
+exports.sass = function (options) {
   options = options || {};
-  var source = options.source || 
-    ['./test-data/scss/**/*.scss', './test-data/scss/*.scss'];
+  var source = options.source || ['./test-data/scss/**/*.scss',
+    './test-data/scss/*.scss'
+  ];
   var destination = options.destination || './www/css';
-  
+
   console.log('[SASS] recompiling'.yellow);
   gulp.src(source)
     .pipe(watch())
@@ -274,7 +278,7 @@ exports.connectWatch = function (options) {
 
 // Generate resized and renamed icons and places them in
 // appropriate platform directory.
-// 
+//
 // params can contain an 'iconSrc' property, which will default
 // to 'icon.png' when omitted.
 //
@@ -282,121 +286,96 @@ exports.connectWatch = function (options) {
 // the names of the platforms you want to generate icons for.
 // Defaults to ['android', 'ios'] when omitted.
 //
-exports.cordovaIcons = function(params) {
+exports.cordovaIcons = function (params) {
   params = params || {};
-  var iconSrc   = params.iconSrc || 'icon.png';
+  var iconSrc = params.iconSrc || 'icon.png';
   var platforms = params.platforms || ['android', 'ios'];
-  var project   = params.project;
+  var project = params.project;
 
 
   var androidPath = 'platforms/android/res/';
 
-  var androidSizes = [
-    {
-      name: 'drawable-ldpi/icon.png',
-      size: 36
-    },
-    {
-      name: 'drawable-mdpi/icon.png',
-      size: 48
-    },
-    {
-      name: 'drawable-hdpi/icon.png',
-     size: 72
-    },
-    {
-      name: 'drawable-xhdpi/icon.png',
-      size: 96
-    },
-    {
-      name: 'drawable/icon.png',
-      size: 96
-    }
-  ];
+  var androidSizes = [{
+    name: 'drawable-ldpi/icon.png',
+    size: 36
+  }, {
+    name: 'drawable-mdpi/icon.png',
+    size: 48
+  }, {
+    name: 'drawable-hdpi/icon.png',
+    size: 72
+  }, {
+    name: 'drawable-xhdpi/icon.png',
+    size: 96
+  }, {
+    name: 'drawable/icon.png',
+    size: 96
+  }];
 
-  var iosSizes = [
-    {
-      name: 'icon-29.png',
-      size: 29
-    },
-    {
-      name: 'icon-40.png',
-      size: 40
-    },
-    {
-      name: 'icon-40@2x.png',
-      size: 80
-    },
-    {
-      name: 'icon-50.png',
-      size: 50
-    },
-    {
-      name: 'icon-50@2x.png',
-      size: 100
-    },
-    {
-      name: 'icon-57.png',
-      size: 57
-    },
-    {
-      name: 'icon-57@2x.png',
-      size: 114
-    },
-    {
-      name: 'icon-60.png',
-      size: 60
-    },
-    {
-      name: 'icon-60@2x.png',
-      size: 120
-    },
-    {
-      name: 'icon-72x.png',
-      size: 72
-    },
-    {
-      name: 'icon-72@2x.png',
-      size: 144
-    },
-    {
-      name: 'icon-76x.png',
-      size: 76
-    },
-    {
-      name: 'icon-76@2x.png',
-      size: 156
-    },
-    {
-      name: 'icon-small.png',
-      size: 30
-    },
-    {
-      name: 'icon-small@2x.png',
-      size: 60
-    },
-    {
-      name: 'icon.png',
-      size: 58
-    },
-    {
-      name: 'icon@2x.png',
-      size: 116
-    },
-    {
-      name: 'store-1024.png',
-      size: 1024
-    },
-  ];
+  var iosSizes = [{
+    name: 'icon-29.png',
+    size: 29
+  }, {
+    name: 'icon-40.png',
+    size: 40
+  }, {
+    name: 'icon-40@2x.png',
+    size: 80
+  }, {
+    name: 'icon-50.png',
+    size: 50
+  }, {
+    name: 'icon-50@2x.png',
+    size: 100
+  }, {
+    name: 'icon-57.png',
+    size: 57
+  }, {
+    name: 'icon-57@2x.png',
+    size: 114
+  }, {
+    name: 'icon-60.png',
+    size: 60
+  }, {
+    name: 'icon-60@2x.png',
+    size: 120
+  }, {
+    name: 'icon-72x.png',
+    size: 72
+  }, {
+    name: 'icon-72@2x.png',
+    size: 144
+  }, {
+    name: 'icon-76x.png',
+    size: 76
+  }, {
+    name: 'icon-76@2x.png',
+    size: 156
+  }, {
+    name: 'icon-small.png',
+    size: 30
+  }, {
+    name: 'icon-small@2x.png',
+    size: 60
+  }, {
+    name: 'icon.png',
+    size: 58
+  }, {
+    name: 'icon@2x.png',
+    size: 116
+  }, {
+    name: 'store-1024.png',
+    size: 1024
+  }, ];
 
-  return function() {
+  return function () {
 
     function resizeFunc(path) {
-      return function(img) {
+      return function (img) {
         gm(iconSrc)
           .resize(img.size, img.size)
-          .write(path + img.name, function(err) {
-            if(err) {
+          .write(path + img.name, function (err) {
+            if (err) {
               console.log('✗', '\'' + path + img.name + '\'');
               console.log(err);
             } else {
@@ -406,13 +385,15 @@ exports.cordovaIcons = function(params) {
       };
     }
 
-    if(platforms.indexOf('ios') > -1) {
-      if(!project) { throw 'No project specified'; }
+    if (platforms.indexOf('ios') > -1) {
+      if (!project) {
+        throw 'No project specified';
+      }
       var iosPath = 'platforms/ios/' + project + '/Resources/icons/';
       _.each(iosSizes, resizeFunc(iosPath));
     }
 
-    if(platforms.indexOf('android') > -1) {
+    if (platforms.indexOf('android') > -1) {
       _.each(androidSizes, resizeFunc(androidPath));
     }
   };
